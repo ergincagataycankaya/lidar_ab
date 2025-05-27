@@ -6,7 +6,13 @@ This Shiny web application visualizes LiDAR sensor deployments across Alberta, C
 
 (Add your deployed ShinyApps.io or server URL here once deployed)
 
-📂 Project Structure
+---
+
+![App Screenshot](www/ss.png)
+
+---
+
+## 📂 Project Structure
 
 /your-repo
 │
@@ -31,7 +37,7 @@ Interactive data table linked to map markers
 
 Custom zoom reset, minimap, legend, and measure tools
 
-📦 Dependencies
+## 📦 Dependencies
 
 The application relies on the following R packages:
 
@@ -47,7 +53,7 @@ library(RColorBrewer)
 
 ⚠️ Note: Make sure all shapefiles (.shp, .dbf, .shx, etc.) are correctly placed under www/spatial/.
 
-🚀 How to Run Locally
+## 🚀 How to Run Locally
 
 Clone the repository:
 
@@ -58,7 +64,7 @@ Open app.R in RStudio or your R environment.
 
 Install the required packages (if not already installed).
 
-Run the app:
+## Run the app:
 
 shiny::runApp()
 
@@ -68,7 +74,7 @@ Ensure UTF-8 encoding compatibility for shapefile attributes.
 
 For deployment, you may use rsconnect::deployApp() after logging in to your ShinyApps.io account.
 
-📄 License
+## 📄 License
 
 MIT License. See LICENSE for details.
 
