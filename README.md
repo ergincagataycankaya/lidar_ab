@@ -1,10 +1,10 @@
-Alberta LiDAR Data Collection Explorer
+# Alberta LiDAR Data Collection Explorer
 
 This Shiny web application visualizes LiDAR sensor deployments across Alberta, Canada. Users can interactively explore data collected from different sensors (DLS, TLS, MLS, RGB, MS) across various sites.
 
-🌐 Live Demo
+## 🌐 Live Demo
 
-(Add your deployed ShinyApps.io or server URL here once deployed)
+[https://ergin.shinyapps.io/lidar_ab/](https://ergin.shinyapps.io/lidar_ab/)
 
 ---
 
