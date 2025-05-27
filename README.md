@@ -8,7 +8,7 @@ This Shiny web application visualizes LiDAR sensor deployments across Alberta, C
 
 ---
 
-![App Screenshot](www/ss.png)
+![App Screenshot](www/ss.jpg)
 
 ---
 
