@@ -4,7 +4,7 @@ This Shiny web application visualizes LiDAR sensor deployments across Alberta, C
 
 ## 🌐 Live Demo
 
-[https://ergin.shinyapps.io/lidar_ab/](https://ergin.shinyapps.io/lidar_ab/)
+[https://ergin.shinyapps.io/lidar_ab/](https://ergin.shinyapps.io/lidar/)
 
 ---
 
