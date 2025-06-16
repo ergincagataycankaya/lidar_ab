@@ -17,6 +17,9 @@ This Shiny web application visualizes LiDAR sensor deployments across Alberta, C
 /your-repo
 │
 ├── app.R
+├── global.R
+├── server.R
+├── ui.R
 ├── www/
 │   ├── DATA_SETS_DATABASE.xlsx
 │   ├── spatial/
@@ -38,6 +41,8 @@ Filter by site number and sensor type
 Interactive data table linked to map markers
 
 Custom zoom reset, minimap, legend, and measure tools
+
+Refactored into separate global.R, ui.R, and server.R files with improved CSS styling
 
 ---
 
@@ -66,7 +71,7 @@ Clone the repository:
 git clone https://github.com/yourusername/your-repo.git
 cd your-repo
 
-Open app.R in RStudio or your R environment.
+Open app.R in RStudio or your R environment. This file loads global.R, ui.R and server.R
 
 Install the required packages (if not already installed).
 
@@ -74,7 +79,7 @@ Install the required packages (if not already installed).
 
 ## Run the app:
 
-shiny::runApp()
+shiny::runApp()  # loads global.R, ui.R and server.R automatically
 
 📌 Notes
 
