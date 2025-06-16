@@ -31,7 +31,9 @@ library(RColorBrewer)
 
 # Load LiDAR site database
 data <- read_excel("www/DATA_SETS_DATABASE.xlsx") %>%
-  mutate(Site = as.factor(Site))
+  mutate(
+    Site = suppressWarnings(as.integer(Site))
+  )
 
 # Load ecoregion shapefile and ensure UTF-8 encoding
 ecoregions <- shapefile("www/spatial/ecoregions_ab.shp", 
@@ -55,13 +57,9 @@ ui <- fluidPage(
   titlePanel("Mapping LiDAR Data Collection Across Alberta"),
   fluidRow(
     column(8, align = "center", offset = 1,
-           selectInput("Site", "SITE NO:", choices = sort(unique(data$Site)))
-    ),
-    column(8, align = "center", offset = 1,
-           checkboxGroupInput(
-             "data_type", "Select Data Types:",
-             choices = c("DLS", "TLS", "MLS", "RGB", "MS"),
-             selected = c("DLS", "TLS", "MLS", "RGB", "MS"), inline = TRUE
+           selectInput(
+             "Site", "SITE NO:",
+             choices = sort(unique(data$Site[!is.na(data$Site)]))
            )
     ),
     tags$head(includeCSS("www/style.css")),
@@ -75,17 +73,11 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
-  # Reactive: Filter data by selected site and data types
+  # Reactive: Filter data by selected site
   filtered_data <- reactive({
     req(input$Site)
     data %>%
-      filter(Site %in% input$Site & (
-        (DLS & "DLS" %in% input$data_type) |
-          (TLS & "TLS" %in% input$data_type) |
-          (MLS & "MLS" %in% input$data_type) |
-          (RGB & "RGB" %in% input$data_type) |
-          (MS  & "MS"  %in% input$data_type)
-      )) %>%
+      filter(Site %in% input$Site) %>%
       mutate(
         id = row_number(),
         popup = paste(
@@ -96,10 +88,15 @@ server <- function(input, output, session) {
         )
       )
   })
+
+  table_data <- reactive({
+    filtered_data() %>%
+      select(Year, Month, Day, Project, Site, Crew, DataType, Sensor, Notes, latitude, longitude)
+  })
   
   # Color palette for DataType column
   pal_PLOT <- colorFactor(
-    palette = RColorBrewer::brewer.pal(5, "Set2"),
+    palette = RColorBrewer::brewer.pal(5, "YlGnBu"),
     domain = data$DataType
   )
   
@@ -164,8 +161,8 @@ server <- function(input, output, session) {
   # Render table with site data
   output$data_table <- renderDT({
     datatable(
-      filtered_data(),
-      options = list(pageLength = 3),
+      table_data(),
+      options = list(pageLength = 5, autoWidth = TRUE),
       rownames = FALSE,
       selection = "single"
     )
@@ -177,7 +174,7 @@ server <- function(input, output, session) {
     if (!is.null(click$id)) {
       proxy <- dataTableProxy("data_table")
       selectRows(proxy, which(filtered_data()$id == click$id))
-      proxy %>% selectPage(which(filtered_data()$id == click$id) %/% 3 + 1)
+      proxy %>% selectPage(which(filtered_data()$id == click$id) %/% 5 + 1)
     }
   })
   
