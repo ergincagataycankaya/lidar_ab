@@ -79,19 +79,28 @@ document.addEventListener('DOMContentLoaded', function() {
       geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
       geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-      // Custom shader material for better particle rendering
+      // Custom shader material with GPU-based animation for better performance
       const material = new THREE.ShaderMaterial({
         uniforms: {
+          time: { value: 0.0 },
           pointTexture: { value: null }
         },
         vertexShader: `
+          uniform float time;
           attribute float size;
           attribute vec3 color;
           varying vec3 vColor;
           
           void main() {
             vColor = color;
-            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+            
+            // Animate particle positions in the vertex shader (GPU)
+            vec3 pos = position;
+            float wave = sin(pos.x * 0.1 + time) * cos(pos.z * 0.1 + time) * 5.0;
+            float offset = sin(time + float(gl_VertexID)) * 0.5;
+            pos.y = wave + offset;
+            
+            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
             gl_PointSize = size * (300.0 / -mvPosition.z);
             gl_Position = projectionMatrix * mvPosition;
           }
@@ -128,9 +137,12 @@ document.addEventListener('DOMContentLoaded', function() {
         mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
       });
 
-      // Animation loop
+      // Animation loop (optimized - animation now runs on GPU via vertex shader)
       function animate() {
         requestAnimationFrame(animate);
+
+        // Update time uniform for GPU-based animation
+        material.uniforms.time.value = Date.now() * 0.0001;
 
         // Smooth rotation based on mouse position
         targetRotationY = mouseX * 0.3;
@@ -141,19 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Continuous slow rotation
         particles.rotation.y += 0.001;
-        
-        // Animate particle positions (subtle wave effect)
-        const positions = particles.geometry.attributes.position.array;
-        const time = Date.now() * 0.0001;
-        
-        for (let i = 0; i < particleCount; i++) {
-          const i3 = i * 3;
-          const x = positions[i3];
-          const z = positions[i3 + 2];
-          positions[i3 + 1] = Math.sin(x * 0.1 + time) * Math.cos(z * 0.1 + time) * 5 + Math.sin(time + i) * 0.5;
-        }
-        
-        particles.geometry.attributes.position.needsUpdate = true;
 
         renderer.render(scene, camera);
       }
