@@ -52,7 +52,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Create particle system (LiDAR point cloud effect)
       // Adjust particle count based on device performance
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      // Use media query for better device detection than user agent
+      const isMobile = window.matchMedia('(max-width: 768px)').matches || 
+                       (window.matchMedia('(pointer: coarse)').matches && window.matchMedia('(hover: none)').matches);
       const particleCount = isMobile ? 4000 : 8000;
       const positions = new Float32Array(particleCount * 3);
       const colors = new Float32Array(particleCount * 3);
@@ -144,7 +146,9 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       // Animation loop (optimized - animation now runs on GPU via vertex shader)
+      const TIME_SCALE = 0.0001; // Controls animation speed
       let lastTime = 0;
+      
       function animate(currentTime) {
         requestAnimationFrame(animate);
 
@@ -152,8 +156,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        // Update time uniform for GPU-based animation (use performance.now for precision)
-        material.uniforms.time.value = currentTime * 0.0001;
+        // Update time uniform for GPU-based animation
+        // Use modulo to prevent precision issues with large time values
+        material.uniforms.time.value = (currentTime * TIME_SCALE) % (Math.PI * 2);
 
         // Smooth rotation based on mouse position
         targetRotationY = mouseX * 0.3;
