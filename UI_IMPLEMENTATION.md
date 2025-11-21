@@ -116,6 +116,8 @@ Footer Section
 2. **www/styles.css** - New modern stylesheet (12KB)
 3. **www/script.js** - JavaScript for interactions (11KB)
 
+**Note:** The original `www/style.css` file is preserved for backward compatibility but is not used by the new UI. It can be safely removed if desired.
+
 ### External Dependencies (CDN)
 1. Three.js (r128) - 3D graphics library
 2. Lenis (1.0.19) - Smooth scrolling
@@ -127,11 +129,14 @@ Footer Section
 - Graceful degradation for older browsers
 
 ### Performance Considerations
-- Throttled scroll events
+- Throttled scroll events (16ms / ~60fps)
 - Intersection Observer for viewport detection
 - RequestAnimationFrame for smooth animations
 - Debounced resize handlers
 - Max pixel ratio for retina displays
+- Adaptive particle count (1000 mobile, 2000 desktop)
+- Cached DOM queries to avoid repeated lookups
+- Passive event listeners for better scrolling performance
 
 ## Responsive Design
 

@@ -48,9 +48,10 @@ function initThreeJS() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   container.appendChild(renderer.domElement);
 
-  // Create particle system
+  // Create particle system (adaptive count for performance)
   const particlesGeometry = new THREE.BufferGeometry();
-  const particlesCount = 3000;
+  const isMobile = window.innerWidth < 768;
+  const particlesCount = isMobile ? 1000 : 2000; // Reduced from 3000 for better performance
   const posArray = new Float32Array(particlesCount * 3);
 
   for (let i = 0; i < particlesCount * 3; i++) {
@@ -189,13 +190,15 @@ function initLenisScroll() {
    ============================================== */
 function initParallax() {
   const parallaxElements = document.querySelectorAll('.parallax-section');
+  const glassPanels = document.querySelectorAll('.glass-panel'); // Cache DOM query
   
   if (parallaxElements.length === 0) {
     console.warn('No parallax elements found');
     return;
   }
 
-  window.addEventListener('scroll', () => {
+  // Throttled scroll handler for better performance
+  const handleScroll = throttle(() => {
     const scrolled = window.pageYOffset;
 
     parallaxElements.forEach((element, index) => {
@@ -209,8 +212,7 @@ function initParallax() {
       }
     });
 
-    // Parallax for glass panels
-    const glassPanels = document.querySelectorAll('.glass-panel');
+    // Parallax for glass panels (using cached query)
     glassPanels.forEach((panel, index) => {
       const rect = panel.getBoundingClientRect();
       if (rect.top < window.innerHeight && rect.bottom > 0) {
@@ -219,7 +221,9 @@ function initParallax() {
         panel.style.transform = `translateY(${translateY}px)`;
       }
     });
-  });
+  }, 16); // ~60fps
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
 
   console.log('Parallax effects initialized');
 }
@@ -252,18 +256,18 @@ function initAnimations() {
     observer.observe(el);
   });
 
-  // Add scroll progress indicator
-  window.addEventListener('scroll', () => {
-    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
-    
-    // Update progress bar if it exists
-    const progressBar = document.querySelector('.scroll-progress');
-    if (progressBar) {
+  // Add scroll progress indicator (throttled for performance)
+  const progressBar = document.querySelector('.scroll-progress'); // Cache DOM query
+  if (progressBar) {
+    const updateProgress = throttle(() => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
       progressBar.style.width = scrolled + '%';
-    }
-  });
+    }, 16); // ~60fps
+    
+    window.addEventListener('scroll', updateProgress, { passive: true });
+  }
 
   console.log('Animations initialized');
 }
@@ -365,28 +369,36 @@ function throttle(func, limit) {
    SHINY INTEGRATION
    ============================================== */
 
-// Hook into Shiny's message handlers
+// Hook into Shiny's message handlers (uses jQuery which is loaded by Shiny)
 if (typeof Shiny !== 'undefined') {
   Shiny.addCustomMessageHandler('showNotification', function(message) {
     console.log('Shiny notification:', message);
   });
 
-  // Listen for Shiny connection
-  $(document).on('shiny:connected', function() {
-    console.log('Shiny connected - UI ready');
-  });
+  // Use vanilla JS when jQuery might not be available yet
+  document.addEventListener('DOMContentLoaded', function() {
+    // jQuery event handlers only if jQuery is available (loaded by Shiny)
+    if (typeof $ !== 'undefined') {
+      // Listen for Shiny connection
+      $(document).on('shiny:connected', function() {
+        console.log('Shiny connected - UI ready');
+      });
 
-  $(document).on('shiny:disconnected', function() {
-    console.log('Shiny disconnected');
-  });
+      $(document).on('shiny:disconnected', function() {
+        console.log('Shiny disconnected');
+      });
 
-  // Add loading states for outputs
-  $(document).on('shiny:busy', function() {
-    document.body.classList.add('loading');
-  });
+      // Add loading states for outputs
+      $(document).on('shiny:busy', function() {
+        document.body.classList.add('loading');
+      });
 
-  $(document).on('shiny:idle', function() {
-    document.body.classList.remove('loading');
+      $(document).on('shiny:idle', function() {
+        document.body.classList.remove('loading');
+      });
+    } else {
+      console.warn('jQuery not available for Shiny event handlers');
+    }
   });
 }
 
