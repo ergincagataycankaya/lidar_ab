@@ -18,9 +18,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get canvas container
     const container = document.getElementById('canvas-container');
     if (!container) {
-      console.error('Canvas container not found');
-      return;
+      console.warn('Canvas container not found, skipping 3D background initialization');
+    } else {
+      // Initialize 3D background only if container exists
+      initThreeJsBackground(container, lenis);
     }
+  }
+});
+
+// Function to initialize Three.js background
+function initThreeJsBackground(container, lenis) {
+  if (typeof THREE === 'undefined') return;
 
     // Scene setup
     const scene = new THREE.Scene();
@@ -157,11 +165,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('resize', onWindowResize, false);
 
-    // Clean up on page navigation (Shiny page change)
-    window.addEventListener('pagehide', () => {
-      if (geometry) geometry.dispose();
-      if (material) material.dispose();
-      if (renderer) renderer.dispose();
-    });
-  }
-});
+  // Clean up on page navigation (Shiny page change)
+  window.addEventListener('pagehide', () => {
+    if (geometry) geometry.dispose();
+    if (material) material.dispose();
+    if (renderer) renderer.dispose();
+  });
+}

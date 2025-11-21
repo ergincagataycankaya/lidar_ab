@@ -87,7 +87,7 @@ body, html {
 
 /* Glass Panel - Glassmorphism Effect */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--glass-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: var(--border-radius);
@@ -242,6 +242,23 @@ table.dataTable tbody tr:hover {
 .leaflet-control-zoom a {
   background: rgba(255, 255, 255, 0.9) !important;
   backdrop-filter: blur(8px);
+}
+
+/* Accessibility - Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  #canvas-container {
+    display: none;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
 }
 
 /* Responsive Design */
