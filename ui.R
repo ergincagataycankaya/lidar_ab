@@ -4,10 +4,17 @@ ui <- fluidPage(
   # Include external libraries and assets
   tags$head(
     # Three.js for 3D graphics
-    tags$script(src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"),
+    tags$script(
+      src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
+      integrity = "sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ==",
+      crossorigin = "anonymous"
+    ),
     
     # Lenis for smooth scrolling
-    tags$script(src = "https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"),
+    tags$script(
+      src = "https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"
+      # Note: SRI not available for this GitHub-hosted library; consider hosting locally for production
+    ),
     
     # Google Fonts
     tags$link(

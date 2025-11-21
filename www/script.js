@@ -51,7 +51,7 @@ function initThreeJS() {
   // Create particle system (adaptive count for performance)
   const particlesGeometry = new THREE.BufferGeometry();
   const isMobile = window.innerWidth < 768;
-  const particlesCount = isMobile ? 1000 : 2000; // Reduced from 3000 for better performance
+  const particlesCount = isMobile ? 1000 : 2000; // Adaptive count: fewer particles on mobile
   const posArray = new Float32Array(particlesCount * 3);
 
   for (let i = 0; i < particlesCount * 3; i++) {
@@ -262,7 +262,7 @@ function initAnimations() {
     const updateProgress = throttle(() => {
       const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
       const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrolled = (winScroll / height) * 100;
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0; // Prevent division by zero
       progressBar.style.width = scrolled + '%';
     }, 16); // ~60fps
     

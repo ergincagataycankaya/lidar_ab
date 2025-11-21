@@ -6,7 +6,7 @@ This document describes the modern, high-end UI refactor implemented for the LiD
 ## New Features
 
 ### 1. 3D Background Scene (Three.js)
-- **Particle System**: 3000 particles floating in 3D space
+- **Particle System**: 1000 particles (mobile) or 2000 particles (desktop) floating in 3D space
 - **Geometric Shapes**: Wireframe icosahedron and torus geometries
 - **Interactive**: Responds to mouse movement for dynamic camera positioning
 - **Continuous Animation**: Smooth rotation and movement effects
@@ -116,12 +116,14 @@ Footer Section
 2. **www/styles.css** - New modern stylesheet (12KB)
 3. **www/script.js** - JavaScript for interactions (11KB)
 
-**Note:** The original `www/style.css` file is preserved for backward compatibility but is not used by the new UI. It can be safely removed if desired.
+**Note:** The original `www/style.css` file (2.2KB) is preserved in the repository but is not referenced by the new UI. The new implementation uses `www/styles.css` instead. The old file can be removed if backward compatibility is not needed.
 
 ### External Dependencies (CDN)
-1. Three.js (r128) - 3D graphics library
-2. Lenis (1.0.19) - Smooth scrolling
+1. Three.js (r128) - 3D graphics library (with SRI integrity hash)
+2. Lenis (1.0.19) - Smooth scrolling (consider hosting locally for production)
 3. Google Fonts (Inter) - Typography
+
+**Security Note:** Three.js is loaded with Subresource Integrity (SRI) hash for security. For production deployments, consider hosting all libraries locally to avoid external dependencies.
 
 ### Browser Compatibility
 - Modern browsers with ES6+ support
