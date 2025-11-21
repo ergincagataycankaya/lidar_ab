@@ -3,24 +3,28 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // ===== Initialize Lenis Smooth Scrolling =====
   if (typeof Lenis !== 'undefined') {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      smoothTouch: false,
-      touchMultiplier: 2,
-      infinite: false,
-    });
+    try {
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        smoothTouch: false,
+        touchMultiplier: 2,
+        infinite: false,
+      });
 
-    function raf(time) {
-      lenis.raf(time);
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+
       requestAnimationFrame(raf);
+    } catch (error) {
+      console.warn('Lenis smooth scrolling failed to initialize, using default scrolling:', error);
     }
-
-    requestAnimationFrame(raf);
   }
 
   // ===== Initialize Three.js Scene =====
@@ -47,7 +51,9 @@ document.addEventListener('DOMContentLoaded', function() {
       container.appendChild(renderer.domElement);
 
       // Create particle system (LiDAR point cloud effect)
-      const particleCount = 8000;
+      // Adjust particle count based on device performance
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const particleCount = isMobile ? 4000 : 8000;
       const positions = new Float32Array(particleCount * 3);
       const colors = new Float32Array(particleCount * 3);
       const sizes = new Float32Array(particleCount);
@@ -138,11 +144,16 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       // Animation loop (optimized - animation now runs on GPU via vertex shader)
-      function animate() {
+      let lastTime = 0;
+      function animate(currentTime) {
         requestAnimationFrame(animate);
 
-        // Update time uniform for GPU-based animation
-        material.uniforms.time.value = Date.now() * 0.0001;
+        // Use performance timing for better accuracy
+        const deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
+        // Update time uniform for GPU-based animation (use performance.now for precision)
+        material.uniforms.time.value = currentTime * 0.0001;
 
         // Smooth rotation based on mouse position
         targetRotationY = mouseX * 0.3;
@@ -157,14 +168,18 @@ document.addEventListener('DOMContentLoaded', function() {
         renderer.render(scene, camera);
       }
 
-      animate();
+      animate(0);
 
-      // Handle window resize
+      // Handle window resize with debouncing
+      let resizeTimeout;
       window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+          renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        }, 150); // 150ms debounce
       });
     }
   }
