@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get canvas container
     const container = document.getElementById('canvas-container');
     if (!container) {
-      console.warn('Canvas container not found, skipping 3D background initialization');
+      console.warn('Canvas container with id "canvas-container" not found. Ensure the DOM element exists in ui.R. Skipping 3D background initialization.');
     } else {
       // Initialize 3D background only if container exists
       initThreeJsBackground(container, lenis);
