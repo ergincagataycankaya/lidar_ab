@@ -6,6 +6,7 @@
   --text-dark: #2c3e50;
   --glass-bg: rgba(255, 255, 255, 0.1);
   --glass-border: rgba(255, 255, 255, 0.2);
+  --select-option-bg: rgba(102, 126, 234, 0.95);
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 2rem;
@@ -169,7 +170,7 @@ body, html {
 }
 
 .shiny-input-container select option {
-  background: rgba(102, 126, 234, 0.95);
+  background: var(--select-option-bg);
   color: var(--text-light);
 }
 

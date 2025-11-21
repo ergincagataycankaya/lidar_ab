@@ -107,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ===== COMBINED ANIMATION LOOP =====
     let time = 0;
+    const positionsArray = particles.geometry.attributes.position.array;
     
     function animate(currentTime) {
       requestAnimationFrame(animate);
@@ -131,14 +132,13 @@ document.addEventListener('DOMContentLoaded', function() {
       particles.rotation.x += targetY * 0.3;
 
       // Animate individual particles with wave motion
-      const positions = particles.geometry.attributes.position.array;
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
-        const x = positions[i3];
-        const z = positions[i3 + 2];
+        const x = positionsArray[i3];
+        const z = positionsArray[i3 + 2];
         
         // Create animated wave effect
-        positions[i3 + 1] = Math.sin(x * 0.1 + time * 2) * Math.cos(z * 0.1 + time * 2) * 10 + 
+        positionsArray[i3 + 1] = Math.sin(x * 0.1 + time * 2) * Math.cos(z * 0.1 + time * 2) * 10 + 
                            Math.sin(time * 3 + i * 0.01) * 2;
       }
       particles.geometry.attributes.position.needsUpdate = true;
