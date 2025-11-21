@@ -2,20 +2,14 @@
 document.addEventListener('DOMContentLoaded', function() {
   
   // ===== LENIS SMOOTH SCROLLING INITIALIZATION =====
+  let lenis;
   if (typeof Lenis !== 'undefined') {
-    const lenis = new Lenis({
+    lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smooth: true,
       smoothTouch: false,
     });
-
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
   }
 
   // ===== THREE.JS 3D BACKGROUND INITIALIZATION =====
@@ -52,7 +46,10 @@ document.addEventListener('DOMContentLoaded', function() {
     container.appendChild(renderer.domElement);
 
     // ===== PARTICLE SYSTEM - LiDAR-style Point Cloud =====
-    const particleCount = 10000;
+    // Adjust particle count based on device performance
+    const isMobile = window.innerWidth < 768;
+    const particleCount = isMobile ? 5000 : 10000;
+    
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
@@ -108,11 +105,17 @@ document.addEventListener('DOMContentLoaded', function() {
       mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
     });
 
-    // ===== ANIMATION LOOP =====
+    // ===== COMBINED ANIMATION LOOP =====
     let time = 0;
     
-    function animate() {
+    function animate(currentTime) {
       requestAnimationFrame(animate);
+      
+      // Update Lenis smooth scrolling
+      if (lenis) {
+        lenis.raf(currentTime);
+      }
+      
       time += 0.001;
 
       // Smooth mouse following with easing
@@ -154,11 +157,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('resize', onWindowResize, false);
 
-    // Clean up on page unload
-    window.addEventListener('beforeunload', () => {
-      geometry.dispose();
-      material.dispose();
-      renderer.dispose();
+    // Clean up on page navigation (Shiny page change)
+    window.addEventListener('pagehide', () => {
+      if (geometry) geometry.dispose();
+      if (material) material.dispose();
+      if (renderer) renderer.dispose();
     });
   }
 });

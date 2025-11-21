@@ -10,7 +10,7 @@ ui <- fluidPage(
     # Three.js for 3D effects
     tags$script(src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"),
     # Lenis for smooth scrolling
-    tags$script(src = "https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"),
+    tags$script(src = "https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.29/dist/lenis.min.js"),
     # Local CSS
     includeCSS("www/style.css"),
     # Local JavaScript
