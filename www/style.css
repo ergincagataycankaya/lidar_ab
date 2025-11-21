@@ -1,115 +1,279 @@
-/* 1) Global reset & fonts */
+/* CSS Variables for Colors and Spacing */
+:root {
+  --primary-color: #1976d2;
+  --secondary-color: #43a047;
+  --text-light: #ffffff;
+  --text-dark: #2c3e50;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --border-radius: 16px;
+  --transition-speed: 0.3s;
+}
+
+/* Global Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body, html {
   margin: 0;
   padding: 0;
-  background: #f4f8fb;
-  font-family: 'Inter', 'Roboto', Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
+  color: var(--text-dark);
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
-/* 2) All text bold */
-body, body * {
-  font-weight: 900 !important;
-}
-
-/* 3) Header & subtitle */
-.app-header {
-  background: linear-gradient(90deg, #1976d2 0%, #43a047 100%);
-  color: #fff;
-  text-align: center;
-  font-size: 2.5rem;
-  padding: 26px 0 14px;
-  letter-spacing: 1.1px;
-  border-radius: 0 0 26px 26px;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.09);
-}
-.app-subtitle {
-  background: #e6f1ee;
-  color: #15633c;
-  text-align: center;
-  font-size: 1.19rem;
-  padding: 11px 0 10px;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #b4dcc5;
-  letter-spacing: 0.5px;
-  box-shadow: 0 1px 6px rgba(0,80,20,0.04);
-}
-
-/* 4) Map legend */
-.map-legend {
-  text-align: center;
-  margin: 16px 0 8px;
-}
-.map-legend .dot {
-  width: 14px; height: 14px;
-  border-radius: 7px;
-  display: inline-block;
-  margin-right: 6px;
-}
-.map-legend span { margin-right: 14px; }
-
-/* 5) Panel styling */
-.panel-box {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 3px 16px rgba(0,0,0,0.06);
-  padding: 15px 22px 22px;
-  margin-bottom: 30px;
-}
-
-/* 6) Checkbox full width */
-.shiny-input-container.checkbox-group-input {
+/* 3D Background Container - Fixed Position */
+#canvas-container {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-/* 7) Side-by-side pie & table */
-.flexrow {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 18px;
-  margin-top: 10px;
+/* Main Content - Scrollable */
+.main-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 100vh;
 }
-.pie-panel {
-  flex: 0 0 45%;
+
+/* Hero Section */
+.hero-section {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-}
-.table-panel {
-  flex: 0 0 50%;
-}
-
-/* 8) Pie chart label sizes */
-.plotly .slice text {
-  font-size: 10px !important;
+  min-height: 60vh;
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--text-light);
 }
 
-/* 9) Area table */
-.area-table {
+.hero-title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+  text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.5px;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 300;
+  max-width: 600px;
+  text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3);
+  line-height: 1.6;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+  padding: var(--spacing-lg);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Glass Panel - Glassmorphism Effect */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--glass-border);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all var(--transition-speed) ease;
+}
+
+.glass-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.panel-header {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: var(--spacing-md);
+  text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Map Panel Specific Styles */
+.map-panel {
+  position: relative;
+}
+
+/* Leaflet Map Customization */
+.leaflet-container {
+  border-radius: calc(var(--border-radius) - 4px);
+  background: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Reset Button Styling */
+.reset-button {
+  margin-top: var(--spacing-md);
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: var(--text-light);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  backdrop-filter: blur(8px);
+}
+
+.reset-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Select Input Styling */
+.shiny-input-container label {
+  color: var(--text-light);
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  display: block;
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
+}
+
+.shiny-input-container select {
   width: 100%;
-  border-collapse: collapse;
-  font-size: 1.1rem;
-}
-.area-table th, .area-table td {
-  padding: 8px 10px;
-  text-align: left;
-}
-.area-table th {
-  background: #e9ecef;
-  border-bottom: 2px solid #dadada;
-}
-.area-table td {
-  border-bottom: 1.1px solid #f1f2f6;
-}
-.area-table tr:last-child td {
-  border-bottom: none;
-}
-.area-class-icon {
-  font-size: 1.14em;
-  margin-right: 7px;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: var(--text-light);
+  font-size: 1rem;
+  transition: all var(--transition-speed) ease;
+  backdrop-filter: blur(8px);
 }
 
-/* 10) Responsive */
-@media (max-width: 900px) {
-  .flexrow { flex-direction: column; }
+.shiny-input-container select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.shiny-input-container select option {
+  background: rgba(102, 126, 234, 0.95);
+  color: var(--text-light);
+}
+
+/* DataTables Customization */
+.dataTables_wrapper {
+  color: var(--text-light);
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+  color: var(--text-light);
+}
+
+.dataTables_wrapper .dataTables_filter input {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  color: var(--text-light);
+  padding: 0.5rem;
+}
+
+table.dataTable {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 8px;
+  color: var(--text-light) !important;
+}
+
+table.dataTable thead th {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-light) !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+table.dataTable tbody td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-light) !important;
+}
+
+table.dataTable tbody tr:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  color: var(--text-light) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 4px !important;
+  margin: 0 2px !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: var(--text-light) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: rgba(255, 255, 255, 0.3) !important;
+  color: var(--text-light) !important;
+}
+
+/* Leaflet Controls Styling */
+.leaflet-control-layers {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(8px);
+}
+
+.leaflet-control-zoom a {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: 50vh;
+    padding: var(--spacing-lg);
+  }
+  
+  .dashboard-container {
+    padding: var(--spacing-md);
+  }
+  
+  .glass-panel {
+    padding: var(--spacing-md);
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    min-height: 40vh;
+    padding: var(--spacing-md);
+  }
+  
+  .dashboard-container {
+    padding: var(--spacing-sm);
+  }
 }
