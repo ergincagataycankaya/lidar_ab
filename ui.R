@@ -1,24 +1,56 @@
 # User interface for the LiDAR Data Collection Explorer
 
 ui <- fluidPage(
-  tags$head(includeCSS("www/style.css")),
-  div(class = "app-header", "Mapping LiDAR Data Collection Across Alberta"),
-  div(class = "app-subtitle", "Explore sensor deployments across Alberta"),
-
-  div(class = "panel-box",
-      fluidRow(
-        column(8, align = "center", offset = 2,
-               selectInput(
-                 "Site", "SITE NO:",
-                 choices = sort(unique(data$Site[!is.na(data$Site)]))
-               )
-        ),
-        column(12,
-               leafletOutput("map", height = "70vh"),
-               actionButton("reset_zoom", "Reset Zoom", style = "margin-top: 15px;")
-        )
-      )
+  tags$head(
+    # Google Fonts
+    tags$link(
+      rel = "stylesheet",
+      href = "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap"
+    ),
+    # Three.js for 3D effects
+    tags$script(src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"),
+    # Lenis for smooth scrolling
+    tags$script(src = "https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.29/dist/lenis.min.js"),
+    # Local CSS
+    includeCSS("www/style.css"),
+    # Local JavaScript
+    tags$script(src = "script.js")
   ),
-
-  div(class = "panel-box", DTOutput("data_table"))
+  
+  # 3D Background Container
+  div(id = "canvas-container"),
+  
+  # Main scrollable content
+  div(class = "main-content",
+    # Hero Section
+    div(class = "hero-section",
+      h1(class = "hero-title", "Alberta LiDAR Data Explorer"),
+      p(class = "hero-subtitle", "Explore sensor deployments and LiDAR data collection across Alberta")
+    ),
+    
+    # Dashboard Container
+    div(class = "dashboard-container",
+      # Site Selection Panel
+      div(class = "glass-panel",
+        div(class = "panel-header", "Site Selection"),
+        selectInput(
+          "Site", "SITE NO:",
+          choices = sort(unique(data$Site[!is.na(data$Site)]))
+        )
+      ),
+      
+      # Map Panel
+      div(class = "glass-panel map-panel",
+        div(class = "panel-header", "Interactive Map"),
+        leafletOutput("map", height = "70vh"),
+        actionButton("reset_zoom", "Reset Zoom", class = "reset-button")
+      ),
+      
+      # Data Table Panel
+      div(class = "glass-panel",
+        div(class = "panel-header", "Site Data"),
+        DTOutput("data_table")
+      )
+    )
+  )
 )
