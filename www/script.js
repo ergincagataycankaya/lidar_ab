@@ -4,6 +4,12 @@
 
 document.addEventListener('DOMContentLoaded', function() {
   
+  // Check if Three.js is loaded
+  if (typeof THREE === 'undefined') {
+    console.warn('Three.js library not loaded. Particle background will not be displayed.');
+    return;
+  }
+  
   // Initialize Three.js scene
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -15,6 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const container = document.getElementById('webgl-container');
   if (container) {
     container.appendChild(renderer.domElement);
+  } else {
+    console.warn('webgl-container element not found. Particle background will not be displayed.');
+    return;
   }
   
   // Create particle cloud (simulating LiDAR data)
@@ -100,32 +109,37 @@ document.addEventListener('DOMContentLoaded', function() {
   // Lenis Smooth Scrolling
   // ========================================
   
-  const lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    direction: 'vertical',
-    gestureDirection: 'vertical',
-    smooth: true,
-    smoothTouch: false,
-    touchMultiplier: 2
-  });
-  
-  function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-  }
-  
-  requestAnimationFrame(raf);
-  
-  // Smooth scroll on anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        lenis.scrollTo(target);
-      }
+  // Check if Lenis is loaded
+  if (typeof Lenis !== 'undefined') {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      direction: 'vertical',
+      gestureDirection: 'vertical',
+      smooth: true,
+      smoothTouch: false,
+      touchMultiplier: 2
     });
-  });
+    
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    
+    requestAnimationFrame(raf);
+    
+    // Smooth scroll on anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          lenis.scrollTo(target);
+        }
+      });
+    });
+  } else {
+    console.warn('Lenis library not loaded. Smooth scrolling will not be available.');
+  }
   
 });

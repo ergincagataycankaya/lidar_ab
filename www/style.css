@@ -116,6 +116,13 @@ body, html {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
+/* Fallback for browsers without backdrop-filter support */
+@supports not (backdrop-filter: blur(16px)) {
+  .glass-panel {
+    background: rgba(21, 25, 50, 0.85);
+  }
+}
+
 .glass-panel:hover {
   background: var(--color-glass-hover);
   border-color: rgba(255, 255, 255, 0.15);
